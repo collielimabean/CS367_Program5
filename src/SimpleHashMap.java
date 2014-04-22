@@ -189,21 +189,33 @@ public class SimpleHashMap<K, V>
         if(key == null || value == null)
             throw new NullPointerException("Null key or value -> put");
         
-        V prevValue = null;
-        
         if(loadFactor >= MAX_LOAD_FACTOR)
             rehash();
+
+        return put(key, value, false);
+    }
+    
+    private V put(K key, V value, boolean rehashing)
+    {
+        V prevValue = null;
         
-        List<Entry<K, V>> bucket = map[indexOf((K) key)];
+        List<Entry<K, V>> bucket = map[indexOf(key)];
         
         if(bucket == null)
         {
             bucket = new LinkedList<Entry<K, V>>();
             existingBuckets++;
-            updateLoadFactor();  
+            updateLoadFactor(); 
+            
+            map[indexOf(key)] = bucket;
         }
         
-        bucket.add(new Entry<K, V>(key, value));
+        Entry<K, V> newEntry = new Entry<K, V>(key, value);
+        
+        bucket.add(newEntry);
+        
+        if (!rehashing)
+            shadow.add(newEntry);
         
         return prevValue;
     }
@@ -241,7 +253,10 @@ public class SimpleHashMap<K, V>
                     existingBuckets--;
                 
                 prevValue = entry.getValue();
-                it_b.remove(); // TODO be careful!
+                shadow.remove(entry);
+                
+                it_b.remove();
+                break;
             }
         }
         
@@ -298,6 +313,6 @@ public class SimpleHashMap<K, V>
         map = (LinkedList<Entry<K, V>>[]) new LinkedList<?>[capacity];
         
         for (Entry<K, V> entry : shadow)
-            put(entry.getKey(), entry.getValue());
+            put(entry.getKey(), entry.getValue(), true);
     }
 }
