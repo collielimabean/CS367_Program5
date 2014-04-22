@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -34,6 +37,7 @@ import java.util.List;
  * codes are the same that the keys are equal since collisions are possible.
  * </p>
  */
+@SuppressWarnings("unchecked")
 public class SimpleHashMap<K, V>
 {
 
@@ -48,9 +52,10 @@ public class SimpleHashMap<K, V>
         /**
          * Constructs the map entry with the specified key and value.
          */
-        public Entry(K k, V v)
+        public Entry(K key, V value)
         {
-            // TODO
+            this.key = key;
+            this.value = value;
         }
 
         /**
@@ -60,7 +65,7 @@ public class SimpleHashMap<K, V>
          */
         public K getKey()
         {
-            // TODO
+            return key;
         }
 
         /**
@@ -70,7 +75,7 @@ public class SimpleHashMap<K, V>
          */
         public V getValue()
         {
-            // TODO
+            return value;
         }
 
         /**
@@ -83,11 +88,32 @@ public class SimpleHashMap<K, V>
          */
         public V setValue(V value)
         {
-            // TODO
+            V old = this.value;
+            this.value = value;
+            
+            return old;
         }
     }
-
-    // TODO You may add private fields here
+    
+    private static int[] CAPACITY_SIZES = 
+    {
+        11, 23, 47, 97, 197, 397, 797, 1597, 3203, 6421, 12853, 25717,
+        51437, 102877, 205759, 411527, 823117, 1646237, 3292489, 6584983,
+        13169977, 26339969, 52679969, 105359939, 210719881, 421439783,
+        842879579, 1685759167
+    };
+    
+    private static final double MAX_LOAD_FACTOR = 0.75;
+    private static final int INITIAL_CAPACITY = CAPACITY_SIZES[0];
+    
+    private int numItems;
+    private int capacity_index;
+    private int capacity;
+    private double loadFactor;
+    private int existingBuckets;
+    
+    private List<Entry<K, V>>[] map;
+    private List<Entry<K, V>> shadow;
 
     /**
      * Constructs an empty hash map with initial capacity <tt>11</tt> and
@@ -95,7 +121,16 @@ public class SimpleHashMap<K, V>
      **/
     public SimpleHashMap()
     {
-        // TODO
+        map = (LinkedList<Entry<K, V>>[]) new LinkedList<?>[INITIAL_CAPACITY];
+        shadow = new ArrayList<Entry<K, V>>(INITIAL_CAPACITY);
+        
+        capacity = INITIAL_CAPACITY;
+        capacity_index = 0;
+        
+        loadFactor = 0;
+        numItems = 0;
+        
+        existingBuckets = 0;
     }
 
     /**
@@ -111,7 +146,16 @@ public class SimpleHashMap<K, V>
      */
     public V get(Object key)
     {
-        // TODO
+        if(key == null)
+            throw new NullPointerException("Null key -> get");
+        
+        int index = indexOf((K) key);
+        
+        for (Entry<K, V> entry : map[index])
+            if (entry.getKey().equals(key))
+                return entry.getValue();
+        
+        return null;
     }
 
     /**
@@ -142,7 +186,26 @@ public class SimpleHashMap<K, V>
      */
     public V put(K key, V value)
     {
-        // TODO
+        if(key == null || value == null)
+            throw new NullPointerException("Null key or value -> put");
+        
+        V prevValue = null;
+        
+        if(loadFactor >= MAX_LOAD_FACTOR)
+            rehash();
+        
+        List<Entry<K, V>> bucket = map[indexOf((K) key)];
+        
+        if(bucket == null)
+        {
+            bucket = new LinkedList<Entry<K, V>>();
+            existingBuckets++;
+            updateLoadFactor();  
+        }
+        
+        bucket.add(new Entry<K, V>(key, value));
+        
+        return prevValue;
     }
 
     /**
@@ -158,7 +221,33 @@ public class SimpleHashMap<K, V>
      */
     public V remove(Object key)
     {
-        // TODO
+        if(key == null)
+            throw new NullPointerException("Null key -> remove");
+        
+        K cast_key = (K) key;
+        V prevValue = null;
+        
+        List<Entry<K, V>> bucket = map[indexOf(cast_key)];
+        
+        Iterator<Entry<K, V>> it_b = bucket.iterator();
+        
+        while(it_b.hasNext())
+        {
+            Entry<K, V> entry = it_b.next();
+            
+            if(entry.getKey().equals(cast_key))
+            {
+                if (bucket.size() == 1)
+                    existingBuckets--;
+                
+                prevValue = entry.getValue();
+                it_b.remove(); // TODO be careful!
+            }
+        }
+        
+        updateLoadFactor();
+        
+        return prevValue;
     }
 
     /**
@@ -168,7 +257,7 @@ public class SimpleHashMap<K, V>
      */
     public int size()
     {
-        // TODO
+        return numItems;
     }
 
     /**
@@ -183,6 +272,32 @@ public class SimpleHashMap<K, V>
      */
     public List<Entry<K, V>> entries()
     {
-        // TODO
+        return new ArrayList<Entry<K, V>>(shadow);
+    }
+    
+    private int indexOf(K key)
+    {
+        int index = key.hashCode() % capacity;
+        
+        return (index < 0) ? index + capacity : index;
+    }
+    
+    private void updateLoadFactor()
+    {
+        loadFactor = ((double) existingBuckets) / capacity;
+    }
+    
+    private void rehash()
+    {
+        if(capacity_index == CAPACITY_SIZES.length - 1)
+            throw new RuntimeException("Max size of SimpleHashMap exceeded!");
+        
+        capacity_index++;
+        capacity = CAPACITY_SIZES[capacity_index];
+        
+        map = (LinkedList<Entry<K, V>>[]) new LinkedList<?>[capacity];
+        
+        for (Entry<K, V> entry : shadow)
+            put(entry.getKey(), entry.getValue());
     }
 }

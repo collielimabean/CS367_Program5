@@ -8,8 +8,14 @@ public class LoadBalancerMain
 
     public static void main(String[] args) throws IOException
     {
-        // TODO: Check the number of arguments
-
+        if (args.length != 3 || args.length != 4)
+        {
+            System.out.println("Usage: java LoadBalancerMain <max servers> "
+                    + "<cache size> <input file> <Optional: -v verbose");
+            
+            return;
+        }
+        
         int maxServers = Integer.parseInt(args[0]);
         int cacheSize = Integer.parseInt(args[1]);
         BufferedReader br = new BufferedReader(new FileReader(args[2]));
@@ -24,6 +30,7 @@ public class LoadBalancerMain
         {
             // TODO: Handle each page request
         }
+        
         br.close();
 
         // TODO: Output the number of requests routed to each server
