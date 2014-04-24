@@ -1,7 +1,8 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
+import java.util.Scanner;
 
 public class LoadBalancerMain
 {
@@ -12,26 +13,32 @@ public class LoadBalancerMain
         {
             System.out.println("Usage: java LoadBalancerMain <max servers> "
                     + "<cache size> <input file> <Optional: -v verbose");
-            
             return;
         }
         
         int maxServers = Integer.parseInt(args[0]);
         int cacheSize = Integer.parseInt(args[1]);
-        BufferedReader br = new BufferedReader(new FileReader(args[2]));
-        boolean isVerbose = (args.length == 4) && (args[3].equals("-v"));
-
-        String line;
-        SimpleHashMap<K, V> map = new SimpleHashMap<K, V>(); // TODO: Set the
-                                                             // types for the
-                                                             // HashMap
-
-        while ((line = br.readLine()) != null)
+        File input = new File(args[2]);
+        
+        if(!input.exists() || !input.canRead())
         {
+            System.out.println("Error: Cannot read from input file!");
+            return;
+        }
+        
+        boolean isVerbose = (args.length == 4) && (args[3].equals("-v"));
+        
+        SimpleHashMap<K, V> map = new SimpleHashMap<K, V>();
+        
+        Scanner scan = new Scanner(input);
+        
+        while (scan.hasNextLine())
+        {
+            
             // TODO: Handle each page request
         }
         
-        br.close();
+        scan.close();
 
         // TODO: Output the number of requests routed to each server
         // TODO: Output the total number of evictions
