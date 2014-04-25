@@ -107,7 +107,6 @@ public class SimpleHashMap<K, V>
     private int capacity_index;
     private int capacity;
     private double loadFactor;
-    private int existingBuckets;
 
     private List<Entry<K, V>>[] map;
     private List<Entry<K, V>> shadow;
@@ -127,7 +126,6 @@ public class SimpleHashMap<K, V>
         loadFactor = 0;
         numItems = 0;
 
-        existingBuckets = 0;
     }
 
     /**
@@ -201,7 +199,6 @@ public class SimpleHashMap<K, V>
         if (bucket == null)
         {
             bucket = new LinkedList<Entry<K, V>>();
-            existingBuckets++;
             updateLoadFactor();
 
             map[indexOf(key)] = bucket;
@@ -210,6 +207,7 @@ public class SimpleHashMap<K, V>
         Entry<K, V> newEntry = new Entry<K, V>(key, value);
 
         bucket.add(newEntry);
+        numItems++;
 
         if (!rehashing)
             shadow.add(newEntry);
@@ -245,12 +243,11 @@ public class SimpleHashMap<K, V>
 
             if (entry.getKey().equals(key))
             {
-                if (bucket.size() == 1)
-                    existingBuckets--;
-
                 prevValue = entry.getValue();
                 shadow.remove(entry);
-
+                
+                numItems--;
+                
                 it_b.remove();
                 break;
             }
@@ -293,7 +290,7 @@ public class SimpleHashMap<K, V>
 
     private void updateLoadFactor()
     {
-        loadFactor = ((double) existingBuckets) / capacity;
+        loadFactor = ((double) numItems) / capacity;
     }
 
     private void rehash()

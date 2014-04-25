@@ -30,15 +30,16 @@ public class LoadBalancerMain
         
         SimpleHashMap<K, V> map = new SimpleHashMap<K, V>();
         
-        Scanner scan = new Scanner(input);
+        BufferedReader reader = new BufferedReader(new FileReader(input));
         
-        while (scan.hasNextLine())
+        String line;
+        while ((line = reader.readLine()) != null)
         {
             
             // TODO: Handle each page request
         }
         
-        scan.close();
+        reader.close();
 
         // TODO: Output the number of requests routed to each server
         // TODO: Output the total number of evictions
