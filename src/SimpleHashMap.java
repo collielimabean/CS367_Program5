@@ -146,6 +146,9 @@ public class SimpleHashMap<K, V>
 
         int index = indexOf(key);
 
+        if (map[index] == null)
+            return null;
+
         for (Entry<K, V> entry : map[index])
             if (entry.getKey().equals(key))
                 return entry.getValue();
@@ -244,10 +247,23 @@ public class SimpleHashMap<K, V>
             if (entry.getKey().equals(key))
             {
                 prevValue = entry.getValue();
-                shadow.remove(entry);
-                
+
+                Iterator<Entry<K, V>> it_shadow = shadow.iterator();
+
+                while (it_shadow.hasNext())
+                {
+                    Entry<K, V> shadow_entry = it_shadow.next();
+
+                    if (shadow_entry.getKey().equals(key)
+                            && shadow_entry.getValue().equals(prevValue))
+                    {
+                        it_shadow.remove();
+                        break;
+                    }
+                }
+
                 numItems--;
-                
+
                 it_b.remove();
                 break;
             }
@@ -278,7 +294,7 @@ public class SimpleHashMap<K, V>
      */
     public List<Entry<K, V>> entries()
     {
-        return new ArrayList<Entry<K, V>>(shadow);
+        return shadow;
     }
 
     private int indexOf(Object key)
