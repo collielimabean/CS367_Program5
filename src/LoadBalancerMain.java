@@ -28,6 +28,7 @@ public class LoadBalancerMain
 
         boolean isVerbose = (args.length == 4) && (args[3].equals("-v"));
         
+        // initialize servers
         Server[] servers = new Server[maxServers];
         
         for (int i = 0; i < maxServers; i++)
@@ -41,16 +42,17 @@ public class LoadBalancerMain
         
         int evictions = 0;
         
-        int lineNumber = 1; // debugging tool - remove when done
+        int lineNumber = 1; // XXX debugging tool - remove when done
         
         String line;
         while ((line = reader.readLine()) != null)
         {
-            lineNumber++;
+            lineNumber++; // XXX debugging tool - remove when done
             
-            if (lineNumber >= 999222)
+            if (lineNumber >= 977466)
             {
-                int lel = 3; // debugging tool - remove when done
+                @SuppressWarnings("unused")
+                int lel = 3; // XXX debugging tool - remove when done
             }
             
             if (next >= maxServers)
@@ -61,6 +63,7 @@ public class LoadBalancerMain
             
             Server server;
             
+            // if page already exists, then grab it and increment
             if (handler != null)
             {
                 server = handler.getServer();
@@ -74,26 +77,42 @@ public class LoadBalancerMain
             
             else
             {
+                // otherwise grab next server from the array
                 server = servers[next];
                 next++;
             }
             
+            // if the server is full, evict a page
             if (server.isFull())
             {
                 PageHandler leastUsed = null;
                 
+                // iterate through all entries and grab the page that is least used
                 for (SimpleHashMap.Entry<String, PageHandler> entry : map.entries())
                 {
+                    // ignore all entries from a different server
                     if (!entry.getValue().getServer().equals(server))
                         continue;
                     
-                    if ((leastUsed == null || leastUsed.getNumberRequests() < entry.getValue().getNumberRequests()))
+                    if(entry.getValue().getPage().equals("Page54365.html"))
+                    {
+                        @SuppressWarnings("unused")
+                        int l = 0x1B; // XXX Debug code - remove when complete
+                    }
+                    
+                    // if the reference is not set or the entry has smaller values, set the ref to the smaller entry's value
+                    if ((leastUsed == null || leastUsed.getNumberRequests() > entry.getValue().getNumberRequests()))
                         leastUsed = entry.getValue();
                 }
                 
+                // get the evicted page name [key in the map]
                 String evicted_page = leastUsed.getPage();
+                
+                // remove it from the map as well as decrease # of pages on server
                 map.remove(evicted_page);
                 server.unload();
+                
+                // increment number of evictions
                 evictions++;
                 
                 if (isVerbose)
@@ -104,7 +123,7 @@ public class LoadBalancerMain
             if (isVerbose)
                 System.out.println(server.getAddress());
             
-            
+            // load the page into the map
             map.put(line, new PageHandler(server, line));
             server.load();
             server.route();
@@ -112,9 +131,11 @@ public class LoadBalancerMain
         
         reader.close();
         
+        // print out the number of requests per server
         for (Server s : servers)
             System.out.println(s);
         
+        // print out the number of evictions
         System.out.println("Evictions : " + evictions);
     }
 

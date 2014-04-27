@@ -8,13 +8,13 @@
     :VERBOSE
         java LoadBalancerMain 10 10000 C:\Users\William\Documents\GitHub\CS367_Program5\sampleFile3.txt -v > C:\Users\William\Desktop\output.txt
         
-        FC C:\Users\William\Desktop\output.txt C:\Users\William\Documents\GitHub\CS367_Program5\sampleOutput3Verbose.txt > C:\Users\William\Desktop\diff.txt
+        FC /N C:\Users\William\Desktop\output.txt C:\Users\William\Documents\GitHub\CS367_Program5\sampleOutput3Verbose.txt > C:\Users\William\Desktop\diff.txt
         
         GOTO END
         
     :NOTVERBOSE
         java LoadBalancerMain 10 10000 C:\Users\William\Documents\GitHub\CS367_Program5\sampleFile3.txt > C:\Users\William\Desktop\output.txt
         
-        FC C:\Users\William\Desktop\output.txt C:\Users\William\Documents\GitHub\CS367_Program5\sampleOutput3.txt > C:\Users\William\Desktop\diff.txt
+        FC /N C:\Users\William\Desktop\output.txt C:\Users\William\Documents\GitHub\CS367_Program5\sampleOutput3.txt > C:\Users\William\Desktop\diff.txt
 :END
 ECHO Test complete.
