@@ -125,7 +125,6 @@ public class SimpleHashMap<K, V>
 
         loadFactor = 0;
         numItems = 0;
-
     }
 
     /**

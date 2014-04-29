@@ -39,22 +39,11 @@ public class LoadBalancerMain
         BufferedReader reader = new BufferedReader(new FileReader(input));
         
         int next = 0;
-        
         int evictions = 0;
-        
-        int lineNumber = 1; // XXX debugging tool - remove when done
         
         String line;
         while ((line = reader.readLine()) != null)
         {
-            lineNumber++; // XXX debugging tool - remove when done
-            
-            if (lineNumber >= 977466)
-            {
-                @SuppressWarnings("unused")
-                int lel = 3; // XXX debugging tool - remove when done
-            }
-            
             if (next >= maxServers)
                 next = 0;
             
@@ -66,11 +55,10 @@ public class LoadBalancerMain
             // if page already exists, then grab it and increment
             if (handler != null)
             {
-                server = handler.getServer();
                 handler.request();
                 
                 if (isVerbose)
-                    System.out.println(server.getAddress());
+                    System.out.println(handler.getServer().getAddress());
                 
                 continue;
             }
@@ -94,14 +82,8 @@ public class LoadBalancerMain
                     if (!entry.getValue().getServer().equals(server))
                         continue;
                     
-                    if(entry.getValue().getPage().equals("Page54365.html"))
-                    {
-                        @SuppressWarnings("unused")
-                        int l = 0x1B; // XXX Debug code - remove when complete
-                    }
-                    
                     // if the reference is not set or the entry has smaller values, set the ref to the smaller entry's value
-                    if ((leastUsed == null || leastUsed.getNumberRequests() > entry.getValue().getNumberRequests()))
+                    if ((leastUsed == null || leastUsed.getLastAccessTime() > entry.getValue().getLastAccessTime()))
                         leastUsed = entry.getValue();
                 }
                 

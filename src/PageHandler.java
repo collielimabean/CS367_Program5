@@ -6,7 +6,7 @@ public class PageHandler
 {
     private Server server;
     private String pageName;
-    private long numRequests;
+    private long lastAccessTime;
 
     /**
      * Constructs a new PageHandler object with the specified server and page
@@ -21,8 +21,8 @@ public class PageHandler
     {
         this.server = server;
         this.pageName = pageName;
-
-        numRequests = 1;
+        
+        lastAccessTime = System.nanoTime();
     }
 
     /**
@@ -50,9 +50,9 @@ public class PageHandler
      * 
      * @return a long representing the number of requests for this page.
      */
-    public long getNumberRequests()
+    public long getLastAccessTime()
     {
-        return numRequests;
+        return lastAccessTime;
     }
 
     /**
@@ -60,7 +60,7 @@ public class PageHandler
      */
     public void request()
     {
-        numRequests++;
+        lastAccessTime = System.nanoTime();
         server.route();
     }
 

@@ -32,14 +32,12 @@ public class Server
      * 
      * @return true if was able to load another page onto the server.
      */
-    public boolean load()
+    public void load()
     {
         if (isFull())
-            return false;
+            return;
 
         load++;
-
-        return true;
     }
 
     /**
@@ -47,14 +45,12 @@ public class Server
      * 
      * @return true if able to remove a page from the server.
      */
-    public boolean unload()
+    public void unload()
     {
         if (isEmpty())
-            return false;
+            return;
 
         load--;
-
-        return true;
     }
 
     /**
