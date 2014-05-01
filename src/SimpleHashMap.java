@@ -1,3 +1,16 @@
+///////////////////////////////////////////////////////////////////////////////
+// Main Class File:  LoadBalancerMain.java
+// File:             LoadBalancerMain.java
+// Semester:         CS367 Spring 2014
+//
+// Author:           Allen Hung <athung2@wisc.edu>
+// CS Login:         ahung
+// Lecturer's Name:  Professor Jim Skrentny
+//////////////////// PAIR PROGRAMMERS COMPLETE THIS SECTION ////////////////////
+// Pair Partner:     William Jen <wjen@wisc.edu>
+// CS Login:         jen
+// Lecturer's Name:  Professor Jim Skrentny
+//////////////////////////// 80 columns wide ///////////////////////////////////
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -43,6 +56,8 @@ public class SimpleHashMap<K, V>
 
     /**
      * A map entry (key-value pair).
+     * @param K- Key value for the hash tag
+     * @param V- Value or data attached to the hash identifier
      */
     public static class Entry<K, V>
     {
@@ -51,6 +66,8 @@ public class SimpleHashMap<K, V>
 
         /**
          * Constructs the map entry with the specified key and value.
+         * @param K- Key value for the hash tag
+         * @param V- Value or data attached to the hash identifier
          */
         public Entry(K key, V value)
         {
@@ -94,7 +111,9 @@ public class SimpleHashMap<K, V>
             return old;
         }
     }
-
+    /**
+     * Giant array that holds all prime values for resizing
+     */
     private static int[] CAPACITY_SIZES = { 11, 23, 47, 97, 197, 397, 797,
             1597, 3203, 6421, 12853, 25717, 51437, 102877, 205759, 411527,
             823117, 1646237, 3292489, 6584983, 13169977, 26339969, 52679969,
@@ -102,7 +121,7 @@ public class SimpleHashMap<K, V>
 
     private static final double MAX_LOAD_FACTOR = 0.75;
     private static final int INITIAL_CAPACITY = CAPACITY_SIZES[0];
-
+    
     private int numItems;
     private int capacity_index;
     private int capacity;
@@ -114,6 +133,7 @@ public class SimpleHashMap<K, V>
     /**
      * Constructs an empty hash map with initial capacity <tt>11</tt> and
      * maximum load factor <tt>0.75</tt>.
+     * 
      **/
     public SimpleHashMap()
     {
@@ -191,7 +211,15 @@ public class SimpleHashMap<K, V>
 
         return put(key, value, false);
     }
-
+    /**
+     * Helper method that rehashes using the shadow array we created. 
+     * The shadow lets us place the old keys as well as adding a new key and
+     * value. 
+     * @param key
+     * @param value
+     * @param rehashing
+     * @return
+     */
     private V put(K key, V value, boolean rehashing)
     {
         V prevValue = null;
@@ -295,19 +323,26 @@ public class SimpleHashMap<K, V>
     {
         return shadow;
     }
-
+    /**
+     * Method call that hashes the key
+     * @return the new hash value of the key
+     */
     private int indexOf(Object key)
     {
         int index = key.hashCode() % capacity;
 
         return (index < 0) ? index + capacity : index;
     }
-
+    /**
+     * updates loadfactor 
+     */
     private void updateLoadFactor()
     {
         loadFactor = ((double) numItems) / capacity;
     }
-
+    /**
+     * rehashes the array when load exceeds capacity
+     */
     private void rehash()
     {
         if (capacity_index == CAPACITY_SIZES.length - 1)

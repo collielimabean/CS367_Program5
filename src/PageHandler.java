@@ -1,3 +1,16 @@
+///////////////////////////////////////////////////////////////////////////////
+// Main Class File:  LoadBalancerMain.java
+// File:             LoadBalancerMain.java
+// Semester:         CS367 Spring 2014
+//
+// Author:           Allen Hung <athung2@wisc.edu>
+// CS Login:         ahung
+// Lecturer's Name:  Professor Jim Skrentny
+//////////////////// PAIR PROGRAMMERS COMPLETE THIS SECTION ////////////////////
+// Pair Partner:     William Jen <wjen@wisc.edu>
+// CS Login:         jen
+// Lecturer's Name:  Professor Jim Skrentny
+//////////////////////////// 80 columns wide ///////////////////////////////////
 /**
  * This class contains a mapped page and its accompanying server. It also keeps
  * track of how many requests the page has received.

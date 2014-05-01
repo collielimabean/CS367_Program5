@@ -1,12 +1,40 @@
+///////////////////////////////////////////////////////////////////////////////
+// Main Class File:  LoadBalancerMain.java
+// File:             LoadBalancerMain.java
+// Semester:         CS367 Spring 2014
+//
+// Author:           Allen Hung <athung2@wisc.edu>
+// CS Login:         ahung
+// Lecturer's Name:  Professor Jim Skrentny
+//////////////////// PAIR PROGRAMMERS COMPLETE THIS SECTION ////////////////////
+// Pair Partner:     William Jen <wjen@wisc.edu>
+// CS Login:         jen
+// Lecturer's Name:  Professor Jim Skrentny
+//////////////////////////// 80 columns wide ///////////////////////////////////
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
+/**
+ * The LoadBalancerMain class will contain the main() method that reads 
+ * 	          the file of page requests and routes each one to a hosting server.
+ * @author Allen
+ *
+ */
 public class LoadBalancerMain
 {
     public static final String IP_ADDRESS_TEMPLATE = "192.168.0.";
-    
+    /**
+     * Simulates loading pages onto multiple servers and prints out a list of 
+     * 	requests to each ip server address
+     * @param args  	   
+     *   the number of available hosting servers
+     *   the number of pages that each hosting server can cache
+     *   the path to an input file
+     *   optional: the String "-v" indicating that the program should operate 
+     *    		in verbose mode
+     * @throws IOException when arguments don't match
+     */
     public static void main(String[] args) throws IOException
     {
         if (args.length != 3 && args.length != 4)
@@ -34,7 +62,8 @@ public class LoadBalancerMain
         for (int i = 0; i < maxServers; i++)
             servers[i] = new Server(IP_ADDRESS_TEMPLATE + i, cacheSize);
 
-        SimpleHashMap<String, PageHandler> map = new SimpleHashMap<String, PageHandler>();
+        SimpleHashMap<String, PageHandler> map = new SimpleHashMap<String, 
+        														 PageHandler>();
 
         BufferedReader reader = new BufferedReader(new FileReader(input));
         
@@ -75,22 +104,27 @@ public class LoadBalancerMain
             {
                 PageHandler leastUsed = null;
                 
-                // iterate through all entries and grab the page that is least used
-                for (SimpleHashMap.Entry<String, PageHandler> entry : map.entries())
+                /* iterate through all entries and grab the page that 
+                												 is least used*/
+                for (SimpleHashMap.Entry<String, PageHandler> entry : 
+                											      map.entries())
                 {
                     // ignore all entries from a different server
                     if (!entry.getValue().getServer().equals(server))
                         continue;
                     
-                    // if the reference is not set or the entry has smaller values, set the ref to the smaller entry's value
-                    if ((leastUsed == null || leastUsed.getLastAccessTime() > entry.getValue().getLastAccessTime()))
+                    /* if the reference is not set or the entry has smaller 
+                    		  values, set the ref to the smaller entry's value*/
+                    if ((leastUsed == null || leastUsed.getLastAccessTime() > 
+                    					  entry.getValue().getLastAccessTime()))
                         leastUsed = entry.getValue();
                 }
                 
                 // get the evicted page name [key in the map]
                 String evicted_page = leastUsed.getPage();
                 
-                // remove it from the map as well as decrease # of pages on server
+                /* remove it from the map as well as decrease # of pages on 
+                														server*/
                 map.remove(evicted_page);
                 server.unload();
                 
@@ -98,7 +132,8 @@ public class LoadBalancerMain
                 evictions++;
                 
                 if (isVerbose)
-                    System.out.println("Page " + evicted_page + " has been evicted.");
+                    System.out.println("Page " + evicted_page + " has been " +
+                    												"evicted.");
 
             }
             
