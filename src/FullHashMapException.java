@@ -27,7 +27,9 @@ public class FullHashMapException extends RuntimeException
 
     /**
      * Constructs a new FullHashMapException with the specified message
-     * @param message Exception message to be displayed 
+     * 
+     * @param message
+     *            Exception message to be displayed
      */
     public FullHashMapException(String message)
     {

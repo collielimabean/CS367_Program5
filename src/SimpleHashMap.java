@@ -11,6 +11,7 @@
 // CS Login:         jen
 // Lecturer's Name:  Professor Jim Skrentny
 //////////////////////////// 80 columns wide ///////////////////////////////////
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -26,8 +27,11 @@ public class SimpleHashMap<K, V>
 
     /**
      * A map entry (key-value pair).
-     * @param K Key value for the hash tag
-     * @param V Value or data attached to the hash identifier
+     * 
+     * @param K
+     *            Key value for the hash tag
+     * @param V
+     *            Value or data attached to the hash identifier
      */
     public static class Entry<K, V>
     {
@@ -36,8 +40,11 @@ public class SimpleHashMap<K, V>
 
         /**
          * Constructs the map entry with the specified key and value.
-         * @param K Key value for the hash tag
-         * @param V Value or data attached to the hash identifier
+         * 
+         * @param K
+         *            Key value for the hash tag
+         * @param V
+         *            Value or data attached to the hash identifier
          */
         public Entry(K key, V value)
         {
@@ -92,7 +99,7 @@ public class SimpleHashMap<K, V>
 
     private static final double MAX_LOAD_FACTOR = 0.75;
     private static final int INITIAL_CAPACITY = CAPACITY_SIZES[0];
-    
+
     private int numItems;
     private int capacity_index;
     private int capacity;
@@ -168,18 +175,21 @@ public class SimpleHashMap<K, V>
 
         return put(key, value, false);
     }
-    
+
     /**
      * Helper method to place key into the map.
      * <p>
-     * Differentiates between rehashing and regular modes, since rehashing
-     * uses the shadow to rebuild the map, and thus the shadow cannot be
-     * modified mid-rehashing.
+     * Differentiates between rehashing and regular modes, since rehashing uses
+     * the shadow to rebuild the map, and thus the shadow cannot be modified
+     * mid-rehashing.
      * </p>
-
-     * @param key key to associate with specified value
-     * @param value value to associate with specified key
-     * @param rehashing true if in rehashing procedure, flase otherwise
+     * 
+     * @param key
+     *            key to associate with specified value
+     * @param value
+     *            value to associate with specified key
+     * @param rehashing
+     *            true if in rehashing procedure, flase otherwise
      * @return the value that was previously associated with the key
      */
     private V put(K key, V value, boolean rehashing)
@@ -285,12 +295,13 @@ public class SimpleHashMap<K, V>
 
     /**
      * Returns the index where the object should be placed.
+     * 
      * @return index where the object should be sent into the map.
      */
     private int indexOf(Object key)
     {
         int index = key.hashCode() % capacity;
-        
+
         // add table size to index if index is negative
         return (index < 0) ? index + capacity : index;
     }
@@ -307,7 +318,8 @@ public class SimpleHashMap<K, V>
      * Rehashes the hashmap when the load factor exceeds the limit defined in
      * MAX_LOAD_FACTOR.
      *
-     * @throws FullHashMapException if the hash map cannot expand further
+     * @throws FullHashMapException
+     *             if the hash map cannot expand further
      */
     private void rehash()
     {

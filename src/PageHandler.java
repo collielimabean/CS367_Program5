@@ -35,7 +35,7 @@ public class PageHandler
     {
         this.server = server;
         this.pageName = pageName;
-        
+
         lastAccessTime = System.nanoTime();
     }
 
