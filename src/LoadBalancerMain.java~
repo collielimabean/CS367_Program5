@@ -14,20 +14,21 @@
 // Email:            athung2@wisc.edu
 // CS Login:         ahung
 // Lecturer's Name:  Professor Jim Skrentny
-///////////////////////////////////////////////////////////////////////////////
+//////////////////////////// 80 columns wide //////////////////////////////////
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-
 /**
- * The LoadBalancerMain class simulates routing  page requests to servers.
+ * The LoadBalancerMain class will contain the main() method that reads 
+ * 	          the file of page requests and routes each one to a hosting server.
+ * @author Allen
+ *
  */
 public class LoadBalancerMain
 {
     public static final String IP_ADDRESS_TEMPLATE = "192.168.0.";
-
     /**
      * Simulates loading pages onto multiple servers and prints out a list of 
      * 	requests to each ip server address
@@ -37,7 +38,7 @@ public class LoadBalancerMain
      *   the path to an input file
      *   optional: the String "-v" indicating that the program should operate 
      *    		in verbose mode
-     * @throws IOException If the file cannot be read due to a system lock.
+     * @throws IOException when arguments don't match
      */
     public static void main(String[] args) throws IOException
     {

@@ -19,36 +19,6 @@ import java.util.List;
 /**
  * This class implements a generic map based on hash tables using chained
  * buckets for collision resolution.
- *
- * <p>
- * A map is a data structure that creates a key-value mapping. Keys are unique
- * in the map. That is, there cannot be more than one value associated with a
- * same key. However, two keys can map to a same value.
- * </p>
- *
- * <p>
- * The <tt>SimpleHashMap</tt> class takes two generic parameters, <tt>K</tt> and
- * <tt>V</tt>, standing for the types of keys and values respectively. Items are
- * stored in a hash table. Hash values are computed from the <tt>hashCode()</tt>
- * method of the <tt>K</tt> type objects.
- * </p>
- *
- * <p>
- * The chained buckets are implemented using Java's <tt>LinkedList</tt> class.
- * When a hash table is created, its initial table size and maximum load factor
- * is set to <tt>11</tt> and <tt>0.75</tt>. The hash table can hold arbitrarily
- * many key-value pairs and resizes itself whenever it reaches its maximum load
- * factor.
- * </p>
- *
- * <p>
- * <tt>null</tt> values are not allowed in <tt>SimpleHashMap</tt> and a
- * NullPointerException is thrown if used. You can assume that <tt>equals()</tt>
- * and <tt>hashCode()</tt> on <tt>K</tt> are defined, and that, for two non-
- * <tt>null</tt> keys <tt>k1</tt> and <tt>k2</tt>, if <tt>k1.equals(k2)</tt>
- * then <tt>k1.hashCode() == k2.hashCode()</tt>. Do not assume that if the hash
- * codes are the same that the keys are equal since collisions are possible.
- * </p>
  */
 @SuppressWarnings("unchecked")
 public class SimpleHashMap<K, V>
@@ -56,8 +26,8 @@ public class SimpleHashMap<K, V>
 
     /**
      * A map entry (key-value pair).
-     * @param K- Key value for the hash tag
-     * @param V- Value or data attached to the hash identifier
+     * @param K Key value for the hash tag
+     * @param V Value or data attached to the hash identifier
      */
     public static class Entry<K, V>
     {
@@ -66,8 +36,8 @@ public class SimpleHashMap<K, V>
 
         /**
          * Constructs the map entry with the specified key and value.
-         * @param K- Key value for the hash tag
-         * @param V- Value or data attached to the hash identifier
+         * @param K Key value for the hash tag
+         * @param V Value or data attached to the hash identifier
          */
         public Entry(K key, V value)
         {
@@ -111,11 +81,12 @@ public class SimpleHashMap<K, V>
             return old;
         }
     }
+
     /**
-     * Giant array that holds all prime values for resizing
+     * Integer array holding all possible (prime) capacities under 2^32.
      */
-    private static int[] CAPACITY_SIZES = { 11, 23, 47, 97, 197, 397, 797,
-            1597, 3203, 6421, 12853, 25717, 51437, 102877, 205759, 411527,
+    private static final int[] CAPACITY_SIZES = { 11, 23, 47, 97, 197, 397,
+            797, 1597, 3203, 6421, 12853, 25717, 51437, 102877, 205759, 411527,
             823117, 1646237, 3292489, 6584983, 13169977, 26339969, 52679969,
             105359939, 210719881, 421439783, 842879579, 1685759167 };
 
@@ -176,21 +147,7 @@ public class SimpleHashMap<K, V>
     }
 
     /**
-     * <p>
      * Associates the specified value with the specified key in this map.
-     * Neither the key nor the value can be <tt>null</tt>. If the map previously
-     * contained a mapping for the key, the old value is replaced.
-     * </p>
-     *
-     * <p>
-     * If the load factor of the hash table after the insertion would exceed the
-     * maximum load factor <tt>0.75</tt>, then the resizing mechanism is
-     * triggered. The size of the table should grow at least by a constant
-     * factor in order to ensure the amortized constant complexity, but you are
-     * free to decide the exact value of the new table size (e.g. whether to use
-     * a prime or not). After that, all of the mappings are rehashed to the new
-     * table.
-     * </p>
      *
      * @param key
      *            key with which the specified value is to be associated
@@ -211,14 +168,19 @@ public class SimpleHashMap<K, V>
 
         return put(key, value, false);
     }
+    
     /**
-     * Helper method that rehashes using the shadow array we created. 
-     * The shadow lets us place the old keys as well as adding a new key and
-     * value. 
-     * @param key
-     * @param value
-     * @param rehashing
-     * @return
+     * Helper method to place key into the map.
+     * <p>
+     * Differentiates between rehashing and regular modes, since rehashing
+     * uses the shadow to rebuild the map, and thus the shadow cannot be
+     * modified mid-rehashing.
+     * </p>
+
+     * @param key key to associate with specified value
+     * @param value value to associate with specified key
+     * @param rehashing true if in rehashing procedure, flase otherwise
+     * @return the value that was previously associated with the key
      */
     private V put(K key, V value, boolean rehashing)
     {
@@ -312,10 +274,7 @@ public class SimpleHashMap<K, V>
     }
 
     /**
-     * Returns a list of all the mappings contained in this map. This method
-     * will iterate over the hash table and collect all the entries into a new
-     * list. If the map is empty, return an empty list (not <tt>null</tt>). The
-     * order of entries in the list can be arbitrary.
+     * Returns a list of all the mappings contained in this map.
      *
      * @return a list of mappings in this map
      */
@@ -323,25 +282,32 @@ public class SimpleHashMap<K, V>
     {
         return shadow;
     }
+
     /**
-     * Method call that hashes the key
-     * @return the new hash value of the key
+     * Returns the index where the object should be placed.
+     * @return index where the object should be sent into the map.
      */
     private int indexOf(Object key)
     {
         int index = key.hashCode() % capacity;
-
+        
+        // add table size to index if index is negative
         return (index < 0) ? index + capacity : index;
     }
+
     /**
-     * updates loadfactor 
+     * Updates the load factor.
      */
     private void updateLoadFactor()
     {
         loadFactor = ((double) numItems) / capacity;
     }
+
     /**
-     * rehashes the array when load exceeds capacity
+     * Rehashes the hashmap when the load factor exceeds the limit defined in
+     * MAX_LOAD_FACTOR.
+     *
+     * @throws FullHashMapException if the hash map cannot expand further
      */
     private void rehash()
     {

@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Main Class File:  LoadBalancerMain.java
-// File:             FullHashMapException.java
+// File:             LoadBalancerMain.java
 // Semester:         CS367 Spring 2014
 //
 // Author:           Allen Hung <athung2@wisc.edu>
@@ -27,7 +27,7 @@ public class FullHashMapException extends RuntimeException
 
     /**
      * Constructs a new FullHashMapException with the specified message
-     * @param message Exception message to be displayed 
+     * @param message Exception messaget to be displayed 
      */
     public FullHashMapException(String message)
     {
