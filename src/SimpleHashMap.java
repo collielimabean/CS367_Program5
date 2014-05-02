@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 // Main Class File:  LoadBalancerMain.java
-// File:             LoadBalancerMain.java
+// File:             SimpleHashMap.java
 // Semester:         CS367 Spring 2014
 //
 // Author:           Allen Hung <athung2@wisc.edu>
