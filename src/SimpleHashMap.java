@@ -24,7 +24,7 @@ import java.util.List;
 @SuppressWarnings("unchecked")
 public class SimpleHashMap<K, V>
 {
-
+    
     /**
      * A map entry (key-value pair).
      * 
@@ -140,6 +140,23 @@ public class SimpleHashMap<K, V>
         if (key == null)
             throw new NullPointerException("Null key -> get");
 
+        Entry<K, V> entry = getEntry(key);
+
+        if (entry == null)
+            return null;
+
+        return entry.getValue();
+    }
+
+    /**
+     * Get the Entry that has the specified key.
+     * 
+     * @param key
+     *            Key to match
+     * @return the Entry that holds the key and its value, null if not found
+     */
+    private Entry<K, V> getEntry(Object key)
+    {
         int index = indexOf(key);
 
         if (map[index] == null)
@@ -147,7 +164,7 @@ public class SimpleHashMap<K, V>
 
         for (Entry<K, V> entry : map[index])
             if (entry.getKey().equals(key))
-                return entry.getValue();
+                return entry;
 
         return null;
     }
@@ -168,6 +185,16 @@ public class SimpleHashMap<K, V>
     {
         if (key == null || value == null)
             throw new NullPointerException("Null key or value -> put");
+
+        Entry<K, V> contains = getEntry(key);
+
+        if (contains != null)
+        {
+            V prevValue = contains.getValue();
+            contains.setValue(value);
+
+            return prevValue;
+        }
 
         if (loadFactor >= MAX_LOAD_FACTOR)
             rehash();
@@ -193,15 +220,11 @@ public class SimpleHashMap<K, V>
      */
     private V put(K key, V value, boolean rehashing)
     {
-        V prevValue = null;
-
         List<Entry<K, V>> bucket = map[indexOf(key)];
 
         if (bucket == null)
         {
             bucket = new LinkedList<Entry<K, V>>();
-            updateLoadFactor();
-
             map[indexOf(key)] = bucket;
         }
 
@@ -213,7 +236,9 @@ public class SimpleHashMap<K, V>
         if (!rehashing)
             shadow.add(newEntry);
 
-        return prevValue;
+        updateLoadFactor();
+
+        return null;
     }
 
     /**
