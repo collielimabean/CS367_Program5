@@ -111,8 +111,7 @@ public class SimpleHashMap<K, V>
     /**
      * Constructs an empty hash map with initial capacity <tt>11</tt> and
      * maximum load factor <tt>0.75</tt>.
-     * 
-     **/
+     */
     public SimpleHashMap()
     {
         map = (LinkedList<Entry<K, V>>[]) new LinkedList<?>[INITIAL_CAPACITY];

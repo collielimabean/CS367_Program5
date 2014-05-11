@@ -120,14 +120,17 @@ public class LoadBalancerMain
                     if (!entry.getValue().getServer().equals(server))
                         continue;
                     
+                    if (leastUsed == null)
+                        leastUsed = entry.getValue();
+                    
                     long small_time = leastUsed.getLastAccessTime();
                     long entry_time = entry.getValue().getLastAccessTime();
                     
                     /*
-                     * if the reference is not set or the entry has smaller
-                     * values, set the ref to the smaller entry's value
+                     * if the entry has smaller values, 
+                     * set the ref to the smaller entry's value
                      */
-                    if ((leastUsed == null || (small_time > entry_time)))
+                    if (small_time > entry_time)
                         leastUsed = entry.getValue();
                 }
 
